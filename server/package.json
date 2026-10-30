@@ -1,0 +1,22 @@
+{
+  "name": "vidcraft-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/dev-with-mongo.mjs",
+    "dev:api": "node src/index.js",
+    "start": "node src/index.js",
+    "lint": "echo \"No lint configured\""
+  },
+  "dependencies": {
+    "@huggingface/inference": "^4.13.24",
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.9.1",
+    "node-fetch": "^3.3.2"
+  }
+}
