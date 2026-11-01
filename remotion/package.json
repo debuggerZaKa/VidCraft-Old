@@ -1,32 +1,32 @@
 {
-  "name": "vidcraft-remotion",
+  "name": "remotion",
   "version": "1.0.0",
-  "description": "VidCraft Remotion compositions",
-  "license": "UNLICENSED",
-  "private": true,
+  "description": "VidCraft Remotion pathway — programmatic, deterministic-consistency video rendering (FR-5).",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "remotion studio",
+    "render": "remotion render TitleCard out/test.mp4",
+    "render:wide": "remotion render WideShot out/wide-shot.mp4",
+    "render:medium": "remotion render MediumShot out/medium-shot.mp4",
+    "render:closeup": "remotion render CloseUpShot out/closeup-shot.mp4",
+    "render:all": "npm run render && npm run render:wide && npm run render:medium && npm run render:closeup"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
   "dependencies": {
-    "@remotion/cli": "4.0.460",
-    "@remotion/tailwind-v4": "4.0.460",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "remotion": "4.0.460",
-    "tailwindcss": "4.0.0"
+    "@remotion/bundler": "^4.0.507",
+    "@remotion/cli": "^4.0.507",
+    "@remotion/renderer": "^4.0.507",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "remotion": "^4.0.507"
   },
   "devDependencies": {
-    "@remotion/eslint-config-flat": "4.0.460",
-    "@types/react": "19.2.7",
-    "@types/web": "0.0.166",
-    "eslint": "9.19.0",
-    "prettier": "3.8.1",
-    "typescript": "5.9.3"
-  },
-  "scripts": {
-    "dev": "remotion studio",
-    "build": "remotion bundle",
-    "upgrade": "remotion upgrade",
-    "lint": "eslint src && tsc"
-  },
-  "sideEffects": [
-    "*.css"
-  ]
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "typescript": "^5.9.3"
+  }
 }

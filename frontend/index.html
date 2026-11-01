@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0b0c17" />
+    <title>VidCraft — Prompt-driven video generation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=Amiri:ital,wght@0,400;0,700;1,400&family=Anton&family=Archivo+Black&family=Aref+Ruqaa:wght@400;700&family=Bangers&family=Bebas+Neue&family=Cairo:wght@400;700;900&family=Cinzel:wght@600;800;900&family=Gulzar&family=Lateef:wght@400;700&family=Markazi+Text:wght@500;700&family=Montserrat:wght@400;700;900&family=Noto+Nastaliq+Urdu:wght@400;700&family=Orbitron:wght@600;900&family=Oswald:wght@500;700&family=Outfit:wght@500;800&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Poppins:wght@500;700;900&family=Reem+Kufi:wght@500;700&family=Righteous&family=Rubik+Wet+Paint&family=Scheherazade+New:wght@500;700&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+    <script>
+      // Set theme before first paint to avoid a flash of the wrong theme.
+      (function () {
+        try {
+          var s = localStorage.getItem('vidcraft-theme');
+          var dark = s
+            ? s === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (dark) document.documentElement.classList.add('dark');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

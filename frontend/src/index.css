@@ -1,0 +1,1036 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* Body — kept from the previous system; it is a good neutral text face. */
+@import "@fontsource-variable/geist";
+/* Display — condensed grotesque. Slates, title cards and camera reports are
+   all set in condensed type because the information is dense and the space is
+   narrow; this is the page's voice. */
+@import "@fontsource/barlow-condensed/400.css";
+@import "@fontsource/barlow-condensed/500.css";
+@import "@fontsource/barlow-condensed/600.css";
+@import "@fontsource/barlow-condensed/700.css";
+/* Utility — every number in a camera department is monospaced: timecode,
+   focal length, T-stop, roll and shot IDs. Data uses this face, never the
+   body face. */
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ============================================================
+   VidCraft — "grading suite" theme
+   ------------------------------------------------------------
+   The palette is taken from the subject rather than from a brand
+   deck. Colour grading has a warm/cool axis — tungsten against
+   daylight, safelight against the print — and that axis is the
+   whole palette: AMBER is the warm side, CYAN the cool side, and
+   everything else is the room they are viewed in.
+
+   Dark theme  = the grading suite. The room is dark so the image
+                 reads true; surfaces are near-black and the type is
+                 warm film-base off-white, not pure white.
+   Light theme = the light table. A cool lab white, deliberately NOT
+                 a warm cream — this is a bench, not stationery.
+
+   Replaces the previous violet->cyan aurora/glass system (ADR-029).
+   ============================================================ */
+
+:root {
+  /* ---- Grade axis (shared across themes) ---- */
+  --amber: #e8a33d;
+  --amber-deep: #b4741b;
+  --cyan: #3fb8c4;
+  --cyan-deep: #1e7c88;
+  --film-base: #e9e4da;
+  --grade-room: #14181d;
+
+  /* The one gradient in the system: the warm/cool grade axis itself.
+     Used sparingly — progress, active states, the wordmark rule. */
+  --grad-grade: linear-gradient(100deg, var(--amber) 0%, var(--cyan) 100%);
+
+  /* ---- LIGHT THEME — the light table ---- */
+  --background: #e9ebee;
+  --foreground: #14181d;
+
+  --card: #f4f6f8;
+  --card-foreground: #14181d;
+
+  --popover: #f4f6f8;
+  --popover-foreground: #14181d;
+
+  --primary: #b4741b;
+  --primary-foreground: #fbf8f3;
+
+  --secondary: #dee1e6;
+  --secondary-foreground: #14181d;
+
+  --muted: #dee1e6;
+  --muted-foreground: #5a626b;
+
+  --accent: #1e7c88;
+  --accent-foreground: #fbf8f3;
+
+  --destructive: #b4342a;
+  --destructive-foreground: #fbf8f3;
+
+  --info: #1e7c88;
+  --success: #1e7c88; /* aliased to the cool pole: a separate green sat at ΔE 8.9 from cyan, below the 15 normal-vision floor */
+  --warning: #a8701a;
+
+  --border: rgba(20, 24, 29, 0.13);
+  --input: rgba(20, 24, 29, 0.18);
+  --ring: #b4741b;
+
+  /* Surface tint base — flips with theme so .plate reads correctly in both */
+  --tint: 20, 24, 29;
+  /* Grain is heavier on the light table (paper/film base is textured) */
+  --grain-opacity: 0.045;
+  --vignette-strength: 0.06;
+
+  --chart-1: #b4741b;
+  --chart-2: #1e7c88;
+  --chart-3: #6b6152;
+  --chart-4: #8a5a2b;
+  --chart-5: #2f7d52;
+
+  --radius: 0.6rem;
+
+  --sidebar: #f4f6f8;
+  --sidebar-foreground: #14181d;
+  --sidebar-primary: #b4741b;
+  --sidebar-primary-foreground: #fbf8f3;
+  --sidebar-accent: #dee1e6;
+  --sidebar-accent-foreground: #14181d;
+  --sidebar-border: rgba(20, 24, 29, 0.13);
+  --sidebar-ring: #b4741b;
+
+  /* ---- Data-mark colours ----
+     Deliberately separate from the text/UI accents above. A colour that is
+     legible as 12px body text and a colour that reads well as a filled mark
+     are different colours: --accent (#1e7c88) clears 4.5:1 as text but reads
+     grey as a mark (OKLCH chroma 0.084, below the 0.1 floor), while the mark
+     step below carries chroma 0.10 and would only reach 3.79:1 as text.
+     Validated with the dataviz palette validator against the plate surface:
+     CVD separation ΔE 14.5 (deutan), normal-vision ΔE 21.9, all ≥ 3:1 vs
+     surface. Text always wears the text tokens; these are for marks only. */
+  --mark-warm: #b4741b;
+  --mark-cool: #0089a0;
+  --mark-bad: #b4342a;
+  /* Sequential ramp for magnitude (one hue, light→dark) — the dimension
+     meters. Never a traffic-light rainbow: the number is the magnitude and
+     the label is the identity, so hue carries neither. */
+  --ramp-1: #e8cba3;
+  --ramp-2: #d9a75f;
+  --ramp-3: #c08c2c;
+  --ramp-4: #b4741b;
+
+  /* ---- Elevation ----
+     Light falls from above, so every shadow is offset downward and every
+     raised surface catches a hairline highlight on its top edge. Two layers:
+     a tight contact shadow and a wide ambient one. */
+  --shadow-1: 0 1px 2px rgba(8, 10, 13, 0.16), 0 2px 8px -2px rgba(8, 10, 13, 0.1);
+  --shadow-2: 0 2px 4px rgba(8, 10, 13, 0.18), 0 12px 28px -8px rgba(8, 10, 13, 0.16);
+  --shadow-3: 0 4px 8px rgba(8, 10, 13, 0.2), 0 28px 56px -16px rgba(8, 10, 13, 0.24);
+  --edge-light: rgba(255, 255, 255, 0.7);
+
+  --display: 'Barlow Condensed', 'Arial Narrow', system-ui, sans-serif;
+  --sans: 'Geist Variable', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  /* ---- Motion scale (one set of curves for the whole product) ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 160ms;
+  --dur-base: 300ms;
+  --dur-slow: 620ms;
+
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.dark {
+  /* ---- DARK THEME — the grading suite ---- */
+  --background: #14181d;
+  --foreground: #e9e4da;
+
+  --card: #1a1f26;
+  --card-foreground: #e9e4da;
+
+  --popover: #1a1f26;
+  --popover-foreground: #e9e4da;
+
+  --primary: #e8a33d;
+  --primary-foreground: #14181d;
+
+  --secondary: #222831;
+  --secondary-foreground: #e9e4da;
+
+  --muted: #222831;
+  --muted-foreground: #98a0a9;
+
+  --accent: #3fb8c4;
+  --accent-foreground: #14181d;
+
+  --destructive: #e5695c;
+  --destructive-foreground: #14181d;
+
+  --info: #3fb8c4;
+  --success: #3fb8c4; /* see light theme note — no near-duplicate hue in the status set */
+  --warning: #e8a33d;
+
+  --border: rgba(233, 228, 218, 0.11);
+  --input: rgba(233, 228, 218, 0.16);
+  --ring: #e8a33d;
+
+  --tint: 233, 228, 218;
+  --grain-opacity: 0.055;
+  --vignette-strength: 0.5;
+
+  --chart-1: #e8a33d;
+  --chart-2: #3fb8c4;
+  --chart-3: #c7bfb2;
+  --chart-4: #d98b5a;
+  --chart-5: #5cbd8a;
+
+  --sidebar: #1a1f26;
+  --sidebar-foreground: #e9e4da;
+  --sidebar-primary: #e8a33d;
+  --sidebar-primary-foreground: #14181d;
+  --sidebar-accent: #222831;
+  --sidebar-accent-foreground: #e9e4da;
+  --sidebar-border: rgba(233, 228, 218, 0.11);
+  --sidebar-ring: #e8a33d;
+
+  /* Dark-mode mark steps are selected against the dark plate, not flipped
+     from the light ones. Validated: CVD ΔE 14.2 (deutan), normal-vision
+     ΔE 22.9, all ≥ 3:1 vs #1a1f26. */
+  --mark-warm: #e8a33d;
+  --mark-cool: #3fb8c4;
+  --mark-bad: #e5695c;
+  --ramp-1: #6b5836;
+  --ramp-2: #a07c34;
+  --ramp-3: #cf9333;
+  --ramp-4: #e8a33d;
+
+  /* On a dark surface the ambient shadow does almost nothing; the top-edge
+     highlight is what separates one plate from another, so it carries more
+     of the work and the shadows go deeper. */
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4), 0 2px 8px -2px rgba(0, 0, 0, 0.3);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.45), 0 14px 32px -10px rgba(0, 0, 0, 0.5);
+  --shadow-3: 0 4px 10px rgba(0, 0, 0, 0.5), 0 32px 64px -18px rgba(0, 0, 0, 0.6);
+  --edge-light: rgba(233, 228, 218, 0.09);
+
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: 'Geist Variable', system-ui, sans-serif;
+  --font-display: var(--display);
+  --font-mono: var(--mono);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Tighter radii than the previous system. A grading suite is full of
+     rectangles — frames, gates, monitors — so the geometry is squarer. */
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.4);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    margin: 0;
+    min-height: 100svh;
+    position: relative;
+    overflow-x: hidden;
+    transition: background-color var(--dur-base) ease, color var(--dur-fast) ease;
+  }
+
+  #root {
+    min-height: 100svh;
+    width: 100%;
+    position: relative;
+    z-index: 1;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--display);
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    color: var(--foreground);
+    text-wrap: balance;
+  }
+
+  /* Keyboard focus is a first-class state, not an afterthought. */
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 3px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 35%, transparent);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--foreground) 22%, transparent);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in srgb, var(--primary) 70%, transparent);
+    background-clip: content-box;
+  }
+}
+
+@layer utilities {
+  /* ============================================================
+     Type roles
+     ============================================================ */
+  .font-display {
+    font-family: var(--display);
+  }
+
+  /* Slate field label: how every field on a clapperboard or camera
+     report is set — small, monospaced, uppercase, widely tracked. */
+  .slate-label {
+    font-family: var(--mono);
+    font-size: 0.6875rem;
+    line-height: 1.1;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  /* Numeric data: timecode, durations, shot IDs, scores. */
+  .data {
+    font-family: var(--mono);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+
+  .grade-text {
+    background-image: var(--grad-grade);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .grade-fill {
+    background-image: var(--grad-grade);
+  }
+
+  /* ============================================================
+     Surfaces — "plates" (as in a printing/contact plate)
+     Flat, bordered, with a hairline rule. No glassmorphism.
+     ============================================================ */
+  .plate {
+    background: var(--card);
+    border: 1px solid var(--border);
+    position: relative;
+    /* The hairline along the top edge is the whole trick: a real surface
+       catches the light on the edge that faces it. Paired with a downward
+       shadow it reads as a physical plate rather than a coloured rectangle. */
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-1);
+  }
+
+  /* For the few surfaces that should sit above the rest. */
+  .plate-raised {
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-2);
+  }
+
+  /* A single hairline of the grade axis across the top edge — the only
+     decoration a plate gets. */
+  .plate-ruled::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--grad-grade);
+    opacity: 0.55;
+    pointer-events: none;
+  }
+
+  .plate-inset {
+    background: color-mix(in srgb, rgb(var(--tint)) 4%, transparent);
+    border: 1px solid var(--border);
+  }
+
+  .surface-1 {
+    background: color-mix(in srgb, rgb(var(--tint)) 4%, transparent);
+  }
+  .surface-2 {
+    background: color-mix(in srgb, rgb(var(--tint)) 7%, transparent);
+  }
+
+  /* Letterbox rules — the 2.39:1 bars, used to frame the hero. */
+  .letterbox-rule {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      color-mix(in srgb, var(--foreground) 22%, transparent) 18%,
+      color-mix(in srgb, var(--foreground) 22%, transparent) 82%,
+      transparent
+    );
+  }
+
+  /* ============================================================
+     Interaction
+     ============================================================ */
+  .hover-lift {
+    transition:
+      transform var(--dur-base) var(--ease-out),
+      box-shadow var(--dur-base) var(--ease-out),
+      border-color var(--dur-base) ease;
+    will-change: transform;
+  }
+  /* Hover responds in three channels at once — lift, border warmth, and a
+     shadow that both deepens and picks up the brand hue. One channel alone
+     reads as a cheap rollover; three read as a physical object moving toward
+     the light. */
+  .hover-lift:hover {
+    transform: translateY(-3px);
+    border-color: color-mix(in srgb, var(--primary) 42%, var(--border));
+    box-shadow:
+      inset 0 1px 0 0 var(--edge-light),
+      var(--shadow-2),
+      0 18px 44px -26px color-mix(in srgb, var(--primary) 55%, transparent);
+  }
+
+  /* Primary action: a top-lit fill with a warm cast shadow, so the button
+     looks like it is made of the same material as the plates it sits on. */
+  .btn-premium {
+    background-image: linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--primary) 92%, white),
+      var(--primary)
+    );
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.28),
+      0 1px 2px rgba(8, 10, 13, 0.28),
+      0 8px 20px -8px color-mix(in srgb, var(--primary) 62%, transparent);
+    transition:
+      box-shadow var(--dur-base) var(--ease-out),
+      transform var(--dur-fast) var(--ease-out),
+      filter var(--dur-fast) ease;
+  }
+  .btn-premium:hover:not(:disabled) {
+    filter: brightness(1.05);
+    box-shadow:
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.34),
+      0 2px 4px rgba(8, 10, 13, 0.3),
+      0 14px 30px -10px color-mix(in srgb, var(--primary) 72%, transparent);
+  }
+  .btn-premium:active:not(:disabled) {
+    transform: translateY(1px);
+    box-shadow:
+      inset 0 1px 2px rgba(8, 10, 13, 0.25),
+      0 1px 2px rgba(8, 10, 13, 0.2);
+  }
+
+  /* Light "spills" from the pointer across the plate — a grading monitor
+     catching a highlight. Driven by --mx/--my from useSpotlight. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity var(--dur-base) ease;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      color-mix(in srgb, var(--primary) 14%, transparent),
+      transparent 62%
+    );
+    z-index: -1;
+  }
+  .spotlight:hover::after {
+    opacity: 1;
+  }
+
+  .hover-glow {
+    transition: box-shadow var(--dur-base) ease, border-color var(--dur-base) ease;
+  }
+  .hover-glow:hover {
+    border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+    box-shadow: 0 0 26px -8px color-mix(in srgb, var(--primary) 55%, transparent);
+  }
+
+  .card-3d-pop {
+    transition:
+      transform var(--dur-base) var(--ease-spring),
+      box-shadow var(--dur-base) ease,
+      border-color var(--dur-base) ease;
+    will-change: transform;
+  }
+  .card-3d-pop:hover {
+    transform: translateY(-3px);
+  }
+  .card-3d-pop:active {
+    transform: translateY(-1px) scale(0.985);
+  }
+
+  /* ---- 3D scroll reveal (used by <Reveal/>) ----
+     Softer than the previous 10deg rotateX: this reads as a plate being
+     laid down on the bench rather than a card flying in. */
+  .reveal-3d {
+    opacity: 0;
+    transform: perspective(1400px) rotateX(6deg) translateY(26px);
+    transform-origin: 50% 100%;
+    transition:
+      opacity var(--dur-slow) var(--ease-out),
+      transform var(--dur-slow) var(--ease-out);
+    will-change: opacity, transform;
+  }
+  .reveal-3d.is-visible {
+    opacity: 1;
+    transform: perspective(1400px) rotateX(0) translateY(0);
+  }
+
+  /* ---- 3D tilt (driven by useTilt via CSS vars) ---- */
+  .tilt-3d {
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
+      rotateY(var(--tilt-y, 0deg)) translateZ(0);
+    transition: transform var(--dur-fast) ease-out;
+    transform-style: preserve-3d;
+  }
+
+  /* ---- Entrances ---- */
+  .animate-in-up {
+    animation: in-up var(--dur-slow) var(--ease-out) both;
+  }
+  .tile-in {
+    animation: tile-in 0.42s var(--ease-spring) both;
+  }
+  .animate-pop {
+    animation: pop 0.3s var(--ease-spring);
+  }
+  .animate-shimmer {
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+  .animate-float {
+    animation: float 7s ease-in-out infinite;
+  }
+
+  /* Page-load sequence: elements share one curve and stagger by index,
+     so the first paint reads as one orchestrated move. */
+  .stage-in {
+    animation: in-up 0.7s var(--ease-out) both;
+    animation-delay: calc(var(--i, 0) * 70ms);
+  }
+
+  /* Active pipeline stage — a slow breath, not a blink. */
+  .pulse-active {
+    animation: pulse-active 2s ease-in-out infinite;
+  }
+
+  /* Running film: the connector between pipeline stages fills downward. */
+  .rail-fill {
+    animation: rail-fill 1.6s var(--ease-out) infinite;
+  }
+}
+
+/* ============================================================
+   Room ambience — replaces the aurora orbs.
+   Film grain + vignette. Both are properties of the medium itself:
+   grain is the emulsion, vignette is the lens.
+   ============================================================ */
+.room {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.room__grain {
+  position: absolute;
+  inset: -50%;
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 900ms steps(3) infinite;
+}
+
+.room__vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    120% 90% at 50% 42%,
+    transparent 45%,
+    rgba(0, 0, 0, var(--vignette-strength)) 100%
+  );
+}
+
+/* A single warm key light in the upper corner and a cool fill opposite it —
+   three-point lighting, reduced to two, applied to the room instead of a
+   subject. Very low opacity: this should register as depth, not as colour. */
+.room__key {
+  position: absolute;
+  width: 46rem;
+  height: 46rem;
+  top: -18rem;
+  right: -14rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--amber), transparent 66%);
+  opacity: 0.1;
+  filter: blur(40px);
+  animation: breathe 26s ease-in-out infinite;
+}
+.room__fill {
+  position: absolute;
+  width: 40rem;
+  height: 40rem;
+  bottom: -16rem;
+  left: -12rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cyan), transparent 66%);
+  opacity: 0.09;
+  filter: blur(40px);
+  animation: breathe 32s ease-in-out infinite reverse;
+}
+
+@keyframes grain-shift {
+  0% { transform: translate(0, 0); }
+  25% { transform: translate(-2%, 1%); }
+  50% { transform: translate(1%, -2%); }
+  75% { transform: translate(-1%, -1%); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes breathe {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-3rem, 2rem) scale(1.12); }
+}
+@keyframes in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+@keyframes tile-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes pop {
+  0% { transform: scale(0.75); }
+  60% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+@keyframes pulse-active {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 42%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 7px color-mix(in srgb, var(--primary) 0%, transparent);
+  }
+}
+@keyframes rail-fill {
+  0% { transform: scaleY(0); transform-origin: top; }
+  60% { transform: scaleY(1); transform-origin: top; }
+  61% { transform-origin: bottom; }
+  100% { transform: scaleY(0); transform-origin: bottom; }
+}
+
+/* ============================================================
+   Caption Word Animation Effects (26 Custom FX)
+   ============================================================ */
+
+/* 1. Pop & Bounce */
+@keyframes caption-pop-bounce {
+  0% { transform: scale(0.6); opacity: 0.3; }
+  45% { transform: scale(1.32); }
+  75% { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption-fx-pop-bounce {
+  animation: caption-pop-bounce 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  display: inline-block;
+}
+
+/* 2. Karaoke Glow */
+@keyframes caption-karaoke-glow {
+  0% { filter: brightness(0.7) drop-shadow(0 0 0px transparent); transform: scale(0.96); }
+  50% { filter: brightness(1.3) drop-shadow(0 0 16px currentColor); transform: scale(1.12); }
+  100% { filter: brightness(1.1) drop-shadow(0 0 10px currentColor); transform: scale(1.05); }
+}
+.caption-fx-karaoke-glow {
+  animation: caption-karaoke-glow 0.35s ease-out forwards;
+  display: inline-block;
+}
+
+/* 3. Hovering Wave Float */
+@keyframes caption-hover-float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
+}
+.caption-fx-hover-float {
+  animation: caption-hover-float 1.8s ease-in-out infinite;
+  display: inline-block;
+}
+
+/* 4. Typewriter Snappy */
+@keyframes caption-typewriter {
+  0% { clip-path: inset(0 100% 0 0); opacity: 0; }
+  10% { opacity: 1; }
+  100% { clip-path: inset(0 0 0 0); opacity: 1; }
+}
+.caption-fx-typewriter {
+  animation: caption-typewriter 0.28s cubic-bezier(0.1, 0.9, 0.2, 1) forwards;
+  display: inline-block;
+}
+
+/* 5. Slide Up Rise */
+@keyframes caption-slide-up {
+  0% { transform: translateY(28px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.caption-fx-slide-up {
+  animation: caption-slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  display: inline-block;
+}
+
+/* 6. Slide Down Drop */
+@keyframes caption-slide-down {
+  0% { transform: translateY(-28px); opacity: 0; }
+  70% { transform: translateY(4px); }
+  100% { transform: translateY(0); opacity: 1; }
+}
+.caption-fx-slide-down {
+  animation: caption-slide-down 0.38s cubic-bezier(0.2, 1.2, 0.3, 1) forwards;
+  display: inline-block;
+}
+
+/* 7. Slam Zoom In */
+@keyframes caption-zoom-in {
+  0% { transform: scale(2.2); opacity: 0; filter: blur(6px); }
+  70% { transform: scale(0.92); filter: blur(0px); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption-fx-zoom-in {
+  animation: caption-zoom-in 0.36s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  display: inline-block;
+}
+
+/* 8. Snap Zoom Out */
+@keyframes caption-zoom-out {
+  0% { transform: scale(0.2); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption-fx-zoom-out {
+  animation: caption-zoom-out 0.32s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  display: inline-block;
+}
+
+/* 9. 3D Card Flip X */
+@keyframes caption-flip-x {
+  0% { transform: perspective(400px) rotateX(90deg); opacity: 0; }
+  60% { transform: perspective(400px) rotateX(-15deg); }
+  100% { transform: perspective(400px) rotateX(0deg); opacity: 1; }
+}
+.caption-fx-flip-x {
+  animation: caption-flip-x 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  display: inline-block;
+  transform-origin: center bottom;
+}
+
+/* 10. 3D Coin Flip Y */
+@keyframes caption-flip-y {
+  0% { transform: perspective(400px) rotateY(90deg); opacity: 0; }
+  60% { transform: perspective(400px) rotateY(-12deg); }
+  100% { transform: perspective(400px) rotateY(0deg); opacity: 1; }
+}
+.caption-fx-flip-y {
+  animation: caption-flip-y 0.42s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  display: inline-block;
+}
+
+/* 11. Cinematic Blur In */
+@keyframes caption-blur-in {
+  0% { filter: blur(14px); opacity: 0; transform: scale(1.12); }
+  100% { filter: blur(0px); opacity: 1; transform: scale(1); }
+}
+.caption-fx-blur-in {
+  animation: caption-blur-in 0.35s ease-out forwards;
+  display: inline-block;
+}
+
+/* 12. Cyberpunk Glitch */
+@keyframes caption-glitch {
+  0% { transform: translate(0); text-shadow: -2px 0 #00ffff, 2px 0 #ff00ff; }
+  25% { transform: translate(-3px, 2px); text-shadow: 3px 0 #00ffff, -3px 0 #ff00ff; }
+  50% { transform: translate(3px, -1px); text-shadow: -3px 0 #00ffff, 3px 0 #ff00ff; }
+  75% { transform: translate(-2px, -2px); text-shadow: 2px 0 #00ffff, -2px 0 #ff00ff; }
+  100% { transform: translate(0); text-shadow: none; }
+}
+.caption-fx-glitch {
+  animation: caption-glitch 0.38s ease-in-out forwards;
+  display: inline-block;
+}
+
+/* 13. Dynamic Shake & Jiggle */
+@keyframes caption-shake-jiggle {
+  0% { transform: rotate(0deg); }
+  20% { transform: rotate(-5deg) scale(1.1); }
+  40% { transform: rotate(4deg) scale(1.15); }
+  60% { transform: rotate(-3deg) scale(1.08); }
+  80% { transform: rotate(2deg) scale(1.02); }
+  100% { transform: rotate(0deg) scale(1.05); }
+}
+.caption-fx-shake-jiggle {
+  animation: caption-shake-jiggle 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+  display: inline-block;
+}
+
+/* 14. Neon Strobe Flicker */
+@keyframes caption-neon-flicker {
+  0% { opacity: 0.1; filter: drop-shadow(0 0 1px currentColor); }
+  15% { opacity: 0.9; filter: drop-shadow(0 0 15px currentColor); }
+  30% { opacity: 0.3; filter: drop-shadow(0 0 3px currentColor); }
+  45% { opacity: 1; filter: drop-shadow(0 0 20px currentColor); }
+  65% { opacity: 0.7; filter: drop-shadow(0 0 10px currentColor); }
+  80% { opacity: 1; filter: drop-shadow(0 0 22px currentColor); }
+  100% { opacity: 1; filter: drop-shadow(0 0 14px currentColor); }
+}
+.caption-fx-neon-flicker {
+  animation: caption-neon-flicker 0.45s ease-in-out forwards;
+  display: inline-block;
+}
+
+/* 15. Elastic Spring Jump */
+@keyframes caption-elastic-jump {
+  0% { transform: translateY(0); }
+  30% { transform: translateY(-16px) scale(1.15, 0.88); }
+  50% { transform: translateY(4px) scale(0.92, 1.1); }
+  70% { transform: translateY(-6px) scale(1.04, 0.96); }
+  100% { transform: translateY(0) scale(1, 1); }
+}
+.caption-fx-elastic-jump {
+  animation: caption-elastic-jump 0.5s cubic-bezier(0.28, 0.84, 0.42, 1) forwards;
+  display: inline-block;
+}
+
+/* 16. Stomp Bass Shockwave */
+@keyframes caption-stomp-impact {
+  0% { transform: scale(1.7) translateY(-10px); opacity: 0; }
+  60% { transform: scale(0.92) translateY(0); opacity: 1; }
+  85% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.caption-fx-stomp-impact {
+  animation: caption-stomp-impact 0.34s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+  display: inline-block;
+}
+
+/* 17. Harmonic Wave Rise */
+@keyframes caption-wave-rise {
+  0% { transform: translateY(18px) rotate(-4deg); opacity: 0; }
+  50% { transform: translateY(-6px) rotate(2deg); opacity: 0.8; }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+.caption-fx-wave-rise {
+  animation: caption-wave-rise 0.4s ease-out forwards;
+  display: inline-block;
+}
+
+/* 18. Oblique Skew Slide */
+@keyframes caption-skew-slide {
+  0% { transform: translateX(-35px) skewX(-24deg); opacity: 0; }
+  70% { transform: translateX(5px) skewX(8deg); }
+  100% { transform: translateX(0) skewX(0deg); opacity: 1; }
+}
+.caption-fx-skew-slide {
+  animation: caption-skew-slide 0.36s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  display: inline-block;
+}
+
+/* 19. Elegant Fade Scale */
+@keyframes caption-fade-scale {
+  0% { opacity: 0; transform: scale(0.85); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.caption-fx-fade-scale {
+  animation: caption-fade-scale 0.3s ease-out forwards;
+  display: inline-block;
+}
+
+/* 20. Iridescent Rainbow Spectrum */
+@keyframes caption-rainbow-cycle {
+  0% { filter: hue-rotate(0deg) drop-shadow(0 0 8px #ff0077); }
+  50% { filter: hue-rotate(180deg) drop-shadow(0 0 12px #00ffcc); }
+  100% { filter: hue-rotate(360deg) drop-shadow(0 0 8px #ffaa00); }
+}
+.caption-fx-rainbow-cycle {
+  animation: caption-rainbow-cycle 3s linear infinite;
+  display: inline-block;
+}
+
+/* 21. Pendulum Tilt Swing */
+@keyframes caption-tilt-swing {
+  0% { transform: rotate(-18deg); transform-origin: top center; opacity: 0; }
+  40% { transform: rotate(14deg); opacity: 1; }
+  70% { transform: rotate(-8deg); }
+  90% { transform: rotate(4deg); }
+  100% { transform: rotate(0deg); opacity: 1; }
+}
+.caption-fx-tilt-swing {
+  animation: caption-tilt-swing 0.5s ease-out forwards;
+  display: inline-block;
+}
+
+/* 22. Bright Flash Burst */
+@keyframes caption-flash-burst {
+  0% { filter: brightness(3.5) contrast(200%); transform: scale(1.15); }
+  40% { filter: brightness(2) contrast(150%); }
+  100% { filter: brightness(1) contrast(100%); transform: scale(1); }
+}
+.caption-fx-flash-burst {
+  animation: caption-flash-burst 0.35s ease-out forwards;
+  display: inline-block;
+}
+
+/* 23. Vapor Smoke Drift */
+@keyframes caption-smoke-drift {
+  0% { transform: translateY(16px) scale(0.9); filter: blur(5px); opacity: 0; }
+  60% { filter: blur(0px); opacity: 1; }
+  100% { transform: translateY(0px) scale(1); opacity: 1; }
+}
+.caption-fx-smoke-drift {
+  animation: caption-smoke-drift 0.4s ease-out forwards;
+  display: inline-block;
+}
+
+/* 24. Neon Underline Sweep */
+@keyframes caption-underline-sweep {
+  0% { background-size: 0% 4px; }
+  100% { background-size: 100% 4px; }
+}
+.caption-fx-underline-sweep {
+  display: inline-block;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  animation: caption-underline-sweep 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding-bottom: 3px;
+}
+
+/* 25. Double Pulse Heartbeat */
+@keyframes caption-pulse-heartbeat {
+  0% { transform: scale(1); }
+  25% { transform: scale(1.22); }
+  45% { transform: scale(1.05); }
+  70% { transform: scale(1.18); }
+  100% { transform: scale(1.08); }
+}
+.caption-fx-pulse-heartbeat {
+  animation: caption-pulse-heartbeat 0.42s ease-in-out forwards;
+  display: inline-block;
+}
+
+/* 26. Vortex Whirlwind Rotate */
+@keyframes caption-rotate-in {
+  0% { transform: rotate(-360deg) scale(0.2); opacity: 0; }
+  80% { transform: rotate(15deg) scale(1.1); }
+  100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+.caption-fx-rotate-in {
+  animation: caption-rotate-in 0.46s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  display: inline-block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal-3d {
+    opacity: 1;
+    transform: none;
+  }
+  .room__grain {
+    animation: none;
+  }
+}

@@ -1,5 +1,0 @@
-fastapi==0.112.2
-uvicorn==0.30.6
-huggingface_hub>=0.30.0
-pillow==10.4.0
-python-dotenv==1.0.1

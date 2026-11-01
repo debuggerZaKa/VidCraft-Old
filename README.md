@@ -1,54 +1,26 @@
-# Remotion video
+# VidCraft
 
-<p align="center">
-  <a href="https://github.com/remotion-dev/logo">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-dark.apng">
-      <img alt="Animated Remotion Logo" src="https://github.com/remotion-dev/logo/raw/main/animated-logo-banner-light.gif">
-    </picture>
-  </a>
-</p>
+A multi-agent, retrieval-augmented pipeline for prompt-driven video generation. Final Year Project, Department of Computer Science & Engineering, UET Lahore (Narowal Campus), Session 2023–2027.
 
-Welcome to your Remotion project!
+**Project status: pre-development.** This repository currently contains the FYP proposal and its supporting documentation/tracking system — no application code has been written yet.
 
-## Commands
+## Start here
 
-**Install Dependencies**
+If you are a human or an AI agent picking this project up, read these in order:
 
-```console
-npm i
+1. [`PROJECT_ARCHITECTURE.md`](PROJECT_ARCHITECTURE.md) — what the project is, why, and how it's designed to work. The technical source of truth.
+2. [`PROJECT_PROGRESS.md`](PROJECT_PROGRESS.md) — where development actually stands right now, updated continuously.
+3. [`PROJECT_STATE.yaml`](PROJECT_STATE.yaml) — the same state as #2, in machine-readable form.
+4. [`VidCraft_Proposal.tex`](VidCraft_Proposal.tex) — the original FYP proposal (LaTeX source) that everything above is derived from.
+
+`PROJECT_ARCHITECTURE.md` ends with an **AI Agent Handoff Instructions** section — follow it before writing any code.
+
+## Repository contents
+
+```text
+VidCraft_Proposal.tex      the FYP proposal (LaTeX)
+PROJECT_ARCHITECTURE.md    technical blueprint (what/why/how)
+PROJECT_PROGRESS.md        live development-state tracker
+PROJECT_STATE.yaml         machine-readable mirror of the above
+README.md                  this file
 ```
-
-**Start Preview**
-
-```console
-npm run dev
-```
-
-**Render video**
-
-```console
-npx remotion render
-```
-
-**Upgrade Remotion**
-
-```console
-npx remotion upgrade
-```
-
-## Docs
-
-Get started with Remotion by reading the [fundamentals page](https://www.remotion.dev/docs/the-fundamentals).
-
-## Help
-
-We provide help on our [Discord server](https://discord.gg/6VzzNDwUwV).
-
-## Issues
-
-Found an issue with Remotion? [File an issue here](https://github.com/remotion-dev/remotion/issues/new).
-
-## License
-
-Note that for some entities a company license is needed. [Read the terms here](https://github.com/remotion-dev/remotion/blob/main/LICENSE.md).

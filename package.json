@@ -1,23 +1,14 @@
 {
-  "name": "vidcraft",
+  "name": "vidcraft-root",
+  "version": "1.0.0",
   "private": true,
-  "workspaces": [
-    "client",
-    "server",
-    "remotion"
-  ],
+  "description": "VidCraft multi-agent video generation pipeline",
   "scripts": {
-    "dev": "npm run dev:client",
-    "dev:client": "npm run dev -w client",
-    "dev:server": "npm run dev -w server",
-    "dev:api": "npm run dev:api -w server",
-    "dev:remotion": "npm run dev -w remotion",
-    "build": "npm run build:client && npm run build:remotion",
-    "build:client": "npm run build -w client",
-    "build:remotion": "npm run build -w remotion",
-    "lint": "npm run lint:client && npm run lint:server && npm run lint:remotion",
-    "lint:client": "npm run lint -w client",
-    "lint:server": "npm run lint -w server",
-    "lint:remotion": "npm run lint -w remotion"
+    "dev": "powershell -ExecutionPolicy Bypass -File ./run-all.ps1",
+    "start": "powershell -ExecutionPolicy Bypass -File ./run-all.ps1",
+    "frontend": "npm --prefix frontend run dev",
+    "backend": "npm --prefix backend start",
+    "backend:dev": "npm --prefix backend run dev",
+    "ai-service": "ai-service\\.venv\\Scripts\\python.exe -m uvicorn main:app --host 0.0.0.0 --port 8000 --app-dir ai-service"
   }
 }

@@ -1,87 +1,51 @@
 # Dependencies
 node_modules/
-/.pnp
-.pnp.js
-
-# Environment variables & secrets
-.env
-.env.*
-!.env.example
-*.env
-
-# Python & Virtual Environments
-.venv/
-venv/
-ENV/
-env/
-hf-proxy/.venv/
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-develop-eggs/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-.pytest_cache/
+*.pyc
+.venv/
+.venv-wsl/
+venv/
 
-# Build outputs and caches
+# Claude Code local session state
+.claude/
+
+# Environment
+.env
+.env.local
+
+# Build output
 dist/
-dist-ssr/
 build/
-client/dist/
-.cache/
-.parcel-cache/
-.turbo/
 .next/
-
-# Remotion & Video artifacts
 out/
-.remotion/
-*.mp4
-*.webm
-*.mkv
-server/scripts/test-video.mp4
-server/scripts/test-hf-video.log
-server/test-video.mp4
 
-# Database & Local storage
-data/
-*.sqlite
-*.sqlite3
-*.db
+# Remotion render output
+remotion/out/
+.remotion/
+
+# Generated shot assets (BACKEND-005) — real provider/Remotion output, disposable
+backend/generated/
+
+# RAG generated vector index (RAG-001) — rebuilt from the corpus, not committed
+ai-service/rag/data/
+*.faiss
+
+# Redis snapshot files (Bull/Redis dev — disposable, never committed)
+*.rdb
 
 # Logs
-logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
-# IDE and Editor configurations / agent cache
+# Editor/OS
+.DS_Store
 .vscode/
 .idea/
-.cursor/
-.gemini/
-.agent/
-.codex/
-.qoder/
-*.sublime-project
-*.sublime-workspace
 
-# Operating System files
-.DS_Store
-Thumbs.db
-ehthumbs.db
-Desktop.ini
+# Test/coverage
+coverage/
+.pytest_cache/
+
+# External reference repositories
+editors/
+scratch_sai.json

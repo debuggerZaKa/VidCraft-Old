@@ -1,80 +1,132 @@
-import "./index.css";
-import { Composition } from "remotion";
-import { AtomTouch } from "./AtomTouch";
-import { BallStoryClaude } from "./BallStoryClaude";
-import { BallStory } from "./BallStory";
-import { DivideConquerTree } from "./DivideConquerTree";
-import { DivideAndConquerSort } from "./DivideAndConquerSort";
-import { MyComposition } from "./Composition";
-import { InductionStory } from "./InductionStory";
-import { FamilyPlanningStory } from "./FamilyPlanningStory";
+import React from 'react';
+import { Composition } from 'remotion';
+import { TitleCard } from './TitleCard';
+import { WideShot } from './compositions/WideShot';
+import { MediumShot } from './compositions/MediumShot';
+import { CloseUpShot } from './compositions/CloseUpShot';
+import { StoryboardVideo, totalDurationInFrames } from './compositions/StoryboardVideo';
+import type {
+  Shot,
+  ShotCompositionProps,
+  StoryboardCompositionProps,
+  WorldState,
+} from './types';
+
+const FPS = 30;
+
+// Sample storyboard, adapted from the worked example in
+// VidCraft_Proposal.tex Section 6.3 ("an astronaut repairs a broken
+// antenna on Mars before nightfall"). Used only as defaultProps for local
+// preview/render — the real values will come from FR-3's orchestrator
+// output once AI-004/005 exist.
+const sampleWorldState: WorldState = {
+  characters: ['astronaut in a worn white EVA suit, reflective visor'],
+  setting: 'rust-red Martian plain, distant low hills',
+  style_tokens: ['cinematic', 'warm dusk lighting'],
+};
+
+const sampleShots: Record<'wide' | 'medium' | 'closeup', Shot> = {
+  wide: {
+    shot_id: 1,
+    description:
+      'Wide shot: astronaut walks toward a damaged antenna tower as the sun begins to set.',
+    camera: 'wide, low-angle, slow dolly-in',
+    duration_s: 4,
+    pathway: 'remotion',
+  },
+  medium: {
+    shot_id: 2,
+    description: "Astronaut approaches the antenna tower, assessing the damage.",
+    camera: 'medium, static',
+    duration_s: 3,
+    pathway: 'remotion',
+  },
+  closeup: {
+    shot_id: 3,
+    description: "Close shot: astronaut's gloved hands adjusting a control panel.",
+    camera: 'close-up, static',
+    duration_s: 3,
+    pathway: 'remotion',
+  },
+};
+
+// Dynamic duration per FR-5: shot.duration_s (from the real storyboard),
+// not a hardcoded composition length — each shot in a storyboard can run a
+// different length, and the composition must honor that.
+const calculateShotMetadata = ({ props }: { props: ShotCompositionProps }) => ({
+  durationInFrames: Math.round(props.shot.duration_s * FPS),
+  fps: FPS,
+  width: 1920,
+  height: 1080,
+});
+
+// FR-9: the finished video runs exactly as long as the storyboard says —
+// the sum of every shot's duration_s, resolved at render time from the real
+// shot list rather than fixed here.
+const calculateStoryboardMetadata = ({ props }: { props: StoryboardCompositionProps }) => ({
+  durationInFrames: totalDurationInFrames(props.shots),
+  fps: FPS,
+  width: 1920,
+  height: 1080,
+});
 
 export const RemotionRoot: React.FC = () => {
   return (
     <>
       <Composition
-        id="MyComp"
-        component={MyComposition}
-        durationInFrames={150}
-        fps={30}
-        width={1280}
-        height={720}
+        id="TitleCard"
+        component={TitleCard}
+        durationInFrames={90}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          title: 'VidCraft',
+          subtitle: 'Remotion pathway — REMOTION-001 test composition',
+        }}
       />
       <Composition
-        id="DivideConquer"
-        component={DivideAndConquerSort}
-        durationInFrames={360}
-        fps={30}
-        width={1280}
-        height={720}
+        id="WideShot"
+        component={WideShot}
+        durationInFrames={sampleShots.wide.duration_s * FPS}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{ shot: sampleShots.wide, worldState: sampleWorldState }}
+        calculateMetadata={calculateShotMetadata}
       />
       <Composition
-        id="DivideConquerTree"
-        component={DivideConquerTree}
-        durationInFrames={900}
-        fps={30}
-        width={1280}
-        height={720}
+        id="MediumShot"
+        component={MediumShot}
+        durationInFrames={sampleShots.medium.duration_s * FPS}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{ shot: sampleShots.medium, worldState: sampleWorldState }}
+        calculateMetadata={calculateShotMetadata}
       />
       <Composition
-        id="BallStory"
-        component={BallStory}
-        durationInFrames={900}
-        fps={30}
-        width={1280}
-        height={720}
+        id="CloseUpShot"
+        component={CloseUpShot}
+        durationInFrames={sampleShots.closeup.duration_s * FPS}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{ shot: sampleShots.closeup, worldState: sampleWorldState }}
+        calculateMetadata={calculateShotMetadata}
       />
       <Composition
-        id="BallStoryClaude"
-        component={BallStoryClaude}
-        durationInFrames={900}
-        fps={30}
-        width={1280}
-        height={720}
-      />
-      <Composition
-        id="AtomTouch"
-        component={AtomTouch}
-        durationInFrames={5400}
-        fps={30}
-        width={1280}
-        height={720}
-      />
-      <Composition
-        id="InductionStory"
-        component={InductionStory}
-        durationInFrames={5400}
-        fps={30}
-        width={1280}
-        height={720}
-      />
-      <Composition
-        id="FP"
-        component={FamilyPlanningStory}
-        durationInFrames={2700}
-        fps={30}
-        width={1280}
-        height={720}
+        id="StoryboardVideo"
+        component={StoryboardVideo}
+        durationInFrames={totalDurationInFrames(Object.values(sampleShots))}
+        fps={FPS}
+        width={1920}
+        height={1080}
+        defaultProps={{
+          shots: Object.values(sampleShots),
+          worldState: sampleWorldState,
+        }}
+        calculateMetadata={calculateStoryboardMetadata}
       />
     </>
   );
